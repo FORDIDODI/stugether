@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
+use OpenApi\Generator;
 
 class GenerateDocs extends BaseCommand
 {
@@ -18,14 +19,27 @@ class GenerateDocs extends BaseCommand
 		if (! is_dir($dir)) {
 			mkdir($dir, 0775, true);
 		}
-		$cmd = escapeshellcmd(PHP_BINARY) . ' ' . ROOTPATH . 'vendor/bin/openapi app -o ' . escapeshellarg($target);
 		CLI::write('Generating OpenAPI spec...', 'yellow');
-		exec($cmd, $out, $code);
-		if ($code !== 0) {
-			CLI::error('Failed to generate OpenAPI spec.');
-			return;
+		try {
+			$schemaFile = APPPATH . 'Schemas.php';
+			if (is_file($schemaFile)) {
+				require_once $schemaFile;
+			}
+			$docsPaths = APPPATH . 'DocsPaths.php';
+			if (is_file($docsPaths)) {
+				require_once $docsPaths;
+			}
+			$paths = [
+				rtrim(APPPATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'Controllers',
+				rtrim(APPPATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'Schemas.php',
+				rtrim(APPPATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'DocsPaths.php',
+			];
+			$openapi = Generator::scan($paths);
+			file_put_contents($target, $openapi->toJson());
+			CLI::write('OpenAPI spec generated at ' . $target, 'green');
+		} catch (\Throwable $e) {
+			CLI::error('Failed to generate OpenAPI spec: ' . $e->getMessage());
 		}
-		CLI::write('OpenAPI spec generated at ' . $target, 'green');
 	}
 }
 

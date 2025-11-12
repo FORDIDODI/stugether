@@ -6,18 +6,18 @@ use App\Models\AnggotaForumModel;
 use App\Models\KanbanModel;
 use App\Models\DiscussionModel;
 use CodeIgniter\Database\BaseConnection;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class NotificationController extends BaseAPIController
 {
-	/**
-	 * @OA\Get(
-	 *   path="/notifications",
-	 *   tags={"Notifications"},
-	 *   summary="Get forum notifications summary",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/notifications",
+		tags: ["Notifications"],
+		summary: "Get forum notifications summary",
+		security: [["bearerAuth" => []]],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function index()
 	{
 		$db      = db_connect();

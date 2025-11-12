@@ -3,20 +3,24 @@
 namespace App\Controllers\API;
 
 use App\Models\UserModel;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class UserController extends BaseAPIController
 {
-	/**
-	 * @OA\Get(
-	 *   path="/users/{id}",
-	 *   tags={"Users"},
-	 *   summary="Show user",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-	 *   @OA\Response(response=200, description="User"),
-	 *   @OA\Response(response=404, description="Not found")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/users/{id}",
+		tags: ["Users"],
+		summary: "Show user",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))
+		],
+		responses: [
+			new OAT\Response(response: 200, description: "User"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function show(int $id)
 	{
 		$user = (new UserModel())->find($id);
@@ -26,17 +30,32 @@ class UserController extends BaseAPIController
 		return $this->success($user);
 	}
 
-	/**
-	 * @OA\Put(
-	 *   path="/users/{id}",
-	 *   tags={"Users"},
-	 *   summary="Update user (self only)",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
-	 *   @OA\Response(response=200, description="Updated"),
-	 *   @OA\Response(response=403, description="Forbidden")
-	 * )
-	 */
+	#[OAT\Put(
+		path: "/users/{id}",
+		tags: ["Users"],
+		summary: "Update user (self only)",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))
+		],
+		requestBody: new OAT\RequestBody(
+			required: false,
+			content: new OAT\JsonContent(
+				properties: [
+					new OAT\Property(property: "nim", type: "string"),
+					new OAT\Property(property: "nama", type: "string"),
+					new OAT\Property(property: "kelas", type: "string"),
+					new OAT\Property(property: "semester", type: "integer"),
+					new OAT\Property(property: "password", type: "string", format: "password"),
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 200, description: "Updated"),
+			new OAT\Response(response: 400, description: "Bad Request"),
+			new OAT\Response(response: 403, description: "Forbidden")
+		]
+	)]
 	public function update(int $id)
 	{
 		$current = $this->currentUser();

@@ -5,18 +5,31 @@ namespace App\Controllers\API;
 use App\Models\ForumModel;
 use App\Models\AnggotaForumModel;
 use App\Models\UserModel;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class ForumMemberController extends BaseAPIController
 {
-	/**
-	 * @OA\Post(
-	 *   path="/forums/{id}/join",
-	 *   tags={"Forums"},
-	 *   summary="Join forum by kode_undangan",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Joined")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/forums/{id}/join",
+		tags: ["Forums"],
+		summary: "Join forum by kode_undangan",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))
+		],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(
+				required: ["kode_undangan"],
+				properties: [new OAT\Property(property: "kode_undangan", type: "string")]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 200, description: "Joined"),
+			new OAT\Response(response: 400, description: "Bad Request")
+		]
+	)]
 	public function join(int $forumId)
 	{
 		$rules = config('Validation')->forumJoin;
@@ -45,15 +58,17 @@ class ForumMemberController extends BaseAPIController
 		return $this->success(['ok' => true], 'Joined');
 	}
 
-	/**
-	 * @OA\Post(
-	 *   path="/forums/{id}/leave",
-	 *   tags={"Forums"},
-	 *   summary="Leave forum",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Left")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/forums/{id}/leave",
+		tags: ["Forums"],
+		summary: "Leave forum",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "Left"),
+			new OAT\Response(response: 403, description: "Forbidden")
+		]
+	)]
 	public function leave(int $forumId)
 	{
 		$current = $this->currentUser();
@@ -69,15 +84,14 @@ class ForumMemberController extends BaseAPIController
 		return $this->success(['ok' => true], 'Left forum');
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/forums/{id}/members",
-	 *   tags={"Forums"},
-	 *   summary="List forum members",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/forums/{id}/members",
+		tags: ["Forums"],
+		summary: "List forum members",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function members(int $forumId)
 	{
 		$builder = (new AnggotaForumModel())->builder()
@@ -90,15 +104,24 @@ class ForumMemberController extends BaseAPIController
 		return $this->success($rows);
 	}
 
-	/**
-	 * @OA\Patch(
-	 *   path="/forums/{id}/members/{userId}",
-	 *   tags={"Forums"},
-	 *   summary="Update member allowed_upload (admin)",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Updated")
-	 * )
-	 */
+	#[OAT\Patch(
+		path: "/forums/{id}/members/{userId}",
+		tags: ["Forums"],
+		summary: "Update member allowed_upload (admin)",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "userId", in: "path", required: true, schema: new OAT\Schema(type: "integer")),
+		],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(
+				required: ["allowed_upload"],
+				properties: [new OAT\Property(property: "allowed_upload", type: "integer", enum: [0,1])]
+			)
+		),
+		responses: [new OAT\Response(response: 200, description: "Updated")]
+	)]
 	public function update(int $forumId, int $userId)
 	{
 		$rules = config('Validation')->memberUpdate;

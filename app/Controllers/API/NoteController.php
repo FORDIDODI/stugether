@@ -4,18 +4,34 @@ namespace App\Controllers\API;
 
 use App\Models\NoteModel;
 use App\Models\ForumModel;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class NoteController extends BaseAPIController
 {
-	/**
-	 * @OA\Post(
-	 *   path="/forums/{id}/notes",
-	 *   tags={"Notes"},
-	 *   summary="Create note",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=201, description="Created")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/forums/{id}/notes",
+		tags: ["Notes"],
+		summary: "Create note",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(
+				required: ["judul"],
+				properties: [
+					new OAT\Property(property: "judul", type: "string"),
+					new OAT\Property(property: "kategori", type: "string"),
+					new OAT\Property(property: "mata_kuliah", type: "string"),
+					new OAT\Property(property: "deskripsi", type: "string")
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Created"),
+			new OAT\Response(response: 400, description: "Bad Request")
+		]
+	)]
 	public function store(int $forumId)
 	{
 		$rules = config('Validation')->noteStore;
@@ -36,15 +52,21 @@ class NoteController extends BaseAPIController
 		return $this->success($model->find($id), 'Created', null, 201);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/forums/{id}/notes",
-	 *   tags={"Notes"},
-	 *   summary="List notes",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/forums/{id}/notes",
+		tags: ["Notes"],
+		summary: "List notes",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "kategori", in: "query", required: false, schema: new OAT\Schema(type: "string")),
+			new OAT\Parameter(name: "mata_kuliah", in: "query", required: false, schema: new OAT\Schema(type: "string")),
+			new OAT\Parameter(name: "q", in: "query", required: false, schema: new OAT\Schema(type: "string")),
+			new OAT\Parameter(name: "page", in: "query", required: false, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "per_page", in: "query", required: false, schema: new OAT\Schema(type: "integer")),
+		],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function index(int $forumId)
 	{
 		$q           = trim((string) ($this->request->getGet('q') ?? ''));
@@ -73,15 +95,17 @@ class NoteController extends BaseAPIController
 		return $this->success($data, null, $meta);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/notes/{id}",
-	 *   tags={"Notes"},
-	 *   summary="Show note",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/notes/{id}",
+		tags: ["Notes"],
+		summary: "Show note",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "OK"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function show(int $noteId)
 	{
 		$note = (new NoteModel())->find($noteId);
@@ -91,15 +115,28 @@ class NoteController extends BaseAPIController
 		return $this->success($note);
 	}
 
-	/**
-	 * @OA\Patch(
-	 *   path="/notes/{id}",
-	 *   tags={"Notes"},
-	 *   summary="Update note",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Updated")
-	 * )
-	 */
+	#[OAT\Patch(
+		path: "/notes/{id}",
+		tags: ["Notes"],
+		summary: "Update note",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: false,
+			content: new OAT\JsonContent(
+				properties: [
+					new OAT\Property(property: "judul", type: "string"),
+					new OAT\Property(property: "kategori", type: "string"),
+					new OAT\Property(property: "mata_kuliah", type: "string"),
+					new OAT\Property(property: "deskripsi", type: "string")
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 200, description: "Updated"),
+			new OAT\Response(response: 403, description: "Forbidden")
+		]
+	)]
 	public function update(int $noteId)
 	{
 		$model = new NoteModel();
@@ -116,15 +153,17 @@ class NoteController extends BaseAPIController
 		return $this->success($model->find($noteId), 'Updated');
 	}
 
-	/**
-	 * @OA\Delete(
-	 *   path="/notes/{id}",
-	 *   tags={"Notes"},
-	 *   summary="Delete note",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Deleted")
-	 * )
-	 */
+	#[OAT\Delete(
+		path: "/notes/{id}",
+		tags: ["Notes"],
+		summary: "Delete note",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "Deleted"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function destroy(int $noteId)
 	{
 		$model = new NoteModel();

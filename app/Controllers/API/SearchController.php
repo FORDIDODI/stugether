@@ -6,18 +6,22 @@ use App\Models\ForumModel;
 use App\Models\KanbanModel;
 use App\Models\NoteModel;
 use App\Models\DiscussionModel;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class SearchController extends BaseAPIController
 {
-	/**
-	 * @OA\Get(
-	 *   path="/search",
-	 *   tags={"Search"},
-	 *   summary="Search across entities",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/search",
+		tags: ["Search"],
+		summary: "Search across entities",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "scope", in: "query", required: false, schema: new OAT\Schema(type: "string", enum: ["forums","tasks","notes","discussions","all"])),
+			new OAT\Parameter(name: "q", in: "query", required: true, schema: new OAT\Schema(type: "string"))
+		],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function index()
 	{
 		$scope = $this->request->getGet('scope') ?? 'all';

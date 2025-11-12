@@ -4,18 +4,26 @@ namespace App\Controllers\API;
 
 use App\Models\DiscussionModel;
 use App\Models\ForumModel;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class DiscussionController extends BaseAPIController
 {
-	/**
-	 * @OA\Post(
-	 *   path="/forums/{id}/discussions",
-	 *   tags={"Discussions"},
-	 *   summary="Create discussion",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=201, description="Created")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/forums/{id}/discussions",
+		tags: ["Discussions"],
+		summary: "Create discussion",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(required: ["isi"], properties: [new OAT\Property(property: "isi", type: "string")])
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Created"),
+			new OAT\Response(response: 400, description: "Bad Request")
+		]
+	)]
 	public function store(int $forumId)
 	{
 		$rules = config('Validation')->discussionStore;
@@ -34,15 +42,21 @@ class DiscussionController extends BaseAPIController
 		return $this->success($model->find($id), 'Created', null, 201);
 	}
 
-	/**
-	 * @OA\Post(
-	 *   path="/discussions/{id}/replies",
-	 *   tags={"Discussions"},
-	 *   summary="Reply to discussion",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=201, description="Created")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/discussions/{id}/replies",
+		tags: ["Discussions"],
+		summary: "Reply to discussion",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(required: ["isi"], properties: [new OAT\Property(property: "isi", type: "string")])
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Created"),
+			new OAT\Response(response: 400, description: "Bad Request")
+		]
+	)]
 	public function reply(int $discussionId)
 	{
 		$rules = config('Validation')->discussionReply;
@@ -65,15 +79,20 @@ class DiscussionController extends BaseAPIController
 		return $this->success($model->find($id), 'Created', null, 201);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/forums/{id}/discussions",
-	 *   tags={"Discussions"},
-	 *   summary="List discussions (threaded by default)",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/forums/{id}/discussions",
+		tags: ["Discussions"],
+		summary: "List discussions (threaded by default)",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "threaded", in: "query", required: false, schema: new OAT\Schema(type: "boolean")),
+			new OAT\Parameter(name: "q", in: "query", required: false, schema: new OAT\Schema(type: "string")),
+			new OAT\Parameter(name: "page", in: "query", required: false, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "per_page", in: "query", required: false, schema: new OAT\Schema(type: "integer"))
+		],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function index(int $forumId)
 	{
 		$threaded = filter_var($this->request->getGet('threaded') ?? 'true', FILTER_VALIDATE_BOOLEAN);
@@ -96,15 +115,17 @@ class DiscussionController extends BaseAPIController
 		return $this->success($rows, null, $meta);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/discussions/{id}",
-	 *   tags={"Discussions"},
-	 *   summary="Show discussion",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/discussions/{id}",
+		tags: ["Discussions"],
+		summary: "Show discussion",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "OK"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function show(int $discussionId)
 	{
 		$disc = (new DiscussionModel())->find($discussionId);
@@ -114,15 +135,21 @@ class DiscussionController extends BaseAPIController
 		return $this->success($disc);
 	}
 
-	/**
-	 * @OA\Patch(
-	 *   path="/discussions/{id}",
-	 *   tags={"Discussions"},
-	 *   summary="Update discussion",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Updated")
-	 * )
-	 */
+	#[OAT\Patch(
+		path: "/discussions/{id}",
+		tags: ["Discussions"],
+		summary: "Update discussion",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: false,
+			content: new OAT\JsonContent(properties: [new OAT\Property(property: "isi", type: "string")])
+		),
+		responses: [
+			new OAT\Response(response: 200, description: "Updated"),
+			new OAT\Response(response: 403, description: "Forbidden")
+		]
+	)]
 	public function update(int $discussionId)
 	{
 		$model = new DiscussionModel();
@@ -138,15 +165,17 @@ class DiscussionController extends BaseAPIController
 		return $this->success($model->find($discussionId), 'Updated');
 	}
 
-	/**
-	 * @OA\Delete(
-	 *   path="/discussions/{id}",
-	 *   tags={"Discussions"},
-	 *   summary="Delete discussion",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Deleted")
-	 * )
-	 */
+	#[OAT\Delete(
+		path: "/discussions/{id}",
+		tags: ["Discussions"],
+		summary: "Delete discussion",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "Deleted"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function destroy(int $discussionId)
 	{
 		$model = new DiscussionModel();

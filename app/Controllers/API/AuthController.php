@@ -4,18 +4,31 @@ namespace App\Controllers\API;
 
 use App\Models\UserModel;
 use App\Entities\User;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class AuthController extends BaseAPIController
 {
-	/**
-	 * @OA\Post(
-	 *   path="/auth/register",
-	 *   tags={"Auth"},
-	 *   summary="Register user",
-	 *   @OA\Response(response=201, description="Registered"),
-	 *   @OA\Response(response=400, description="Bad Request")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/auth/register",
+		tags: ["Auth"],
+		summary: "Register user",
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(
+				required: ["nama", "email", "password"],
+				properties: [
+					new OAT\Property(property: "nama", type: "string"),
+					new OAT\Property(property: "email", type: "string", format: "email"),
+					new OAT\Property(property: "password", type: "string", format: "password")
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Registered"),
+			new OAT\Response(response: 400, description: "Bad Request")
+		]
+	)]
 	public function register()
 	{
 		$rules = config('Validation')->authRegister;
@@ -39,15 +52,26 @@ class AuthController extends BaseAPIController
 		return $this->success(['token' => $token, 'user' => $user], 'Registered',  null, 201);
 	}
 
-	/**
-	 * @OA\Post(
-	 *   path="/auth/login",
-	 *   tags={"Auth"},
-	 *   summary="Login",
-	 *   @OA\Response(response=200, description="Logged in"),
-	 *   @OA\Response(response=401, description="Unauthorized")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/auth/login",
+		tags: ["Auth"],
+		summary: "Login",
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(
+				required: ["email", "password"],
+				properties: [
+					new OAT\Property(property: "email", type: "string", format: "email"),
+					new OAT\Property(property: "password", type: "string", format: "password")
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 200, description: "Logged in"),
+			new OAT\Response(response: 400, description: "Bad Request"),
+			new OAT\Response(response: 401, description: "Unauthorized")
+		]
+	)]
 	public function login()
 	{
 		$rules = config('Validation')->authLogin;
@@ -69,33 +93,30 @@ class AuthController extends BaseAPIController
 		return $this->success(['token' => $token, 'user' => $user], 'Logged in');
 	}
 
-	/**
-	 * @OA\Post(
-	 *   path="/auth/logout",
-	 *   tags={"Auth"},
-	 *   summary="Logout (stateless)",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Logged out")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/auth/logout",
+		tags: ["Auth"],
+		summary: "Logout (stateless)",
+		security: [["bearerAuth" => []]],
+		responses: [new OAT\Response(response: 200, description: "Logged out")]
+	)]
 	public function logout()
 	{
 		return $this->success(['ok' => true], 'Logged out');
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/auth/me",
-	 *   tags={"Auth"},
-	 *   summary="Current user",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="User")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/auth/me",
+		tags: ["Auth"],
+		summary: "Current user",
+		security: [["bearerAuth" => []]],
+		responses: [
+			new OAT\Response(response: 200, description: "User"),
+			new OAT\Response(response: 401, description: "Unauthorized")
+		]
+	)]
 	public function me()
 	{
 		return $this->success($this->currentUser());
 	}
 }
-
-

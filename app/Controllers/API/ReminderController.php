@@ -5,19 +5,33 @@ namespace App\Controllers\API;
 use App\Models\ReminderModel;
 use App\Models\KanbanModel;
 use App\Models\ForumModel;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class ReminderController extends BaseAPIController
 {
-	/**
-	 * @OA\Post(
-	 *   path="/tasks/{id}/reminder",
-	 *   tags={"Reminders"},
-	 *   summary="Create reminder for task",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=201, description="Created"),
-	 *   @OA\Response(response=409, description="Conflict")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/tasks/{id}/reminder",
+		tags: ["Reminders"],
+		summary: "Create reminder for task",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(
+				required: ["title","waktu"],
+				properties: [
+					new OAT\Property(property: "title", type: "string"),
+					new OAT\Property(property: "waktu", type: "string", format: "date-time")
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Created"),
+			new OAT\Response(response: 400, description: "Bad Request"),
+			new OAT\Response(response: 409, description: "Conflict")
+		]
+	)]
 	public function store(int $taskId)
 	{
 		$rules = config('Validation')->reminderStore;
@@ -44,15 +58,14 @@ class ReminderController extends BaseAPIController
 		return $this->success($model->find($reminderId), 'Created', null, 201);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/reminders",
-	 *   tags={"Reminders"},
-	 *   summary="List my reminders",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/reminders",
+		tags: ["Reminders"],
+		summary: "List my reminders",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "upcoming", in: "query", required: false, schema: new OAT\Schema(type: "boolean"))],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function index()
 	{
 		$current  = $this->currentUser();
@@ -66,15 +79,17 @@ class ReminderController extends BaseAPIController
 		return $this->success($data);
 	}
 
-	/**
-	 * @OA\Delete(
-	 *   path="/reminders/{id}",
-	 *   tags={"Reminders"},
-	 *   summary="Delete reminder",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Deleted")
-	 * )
-	 */
+	#[OAT\Delete(
+		path: "/reminders/{id}",
+		tags: ["Reminders"],
+		summary: "Delete reminder",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "Deleted"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function destroy(int $reminderId)
 	{
 		$model    = new ReminderModel();

@@ -6,18 +6,34 @@ use App\Models\KanbanModel;
 use App\Models\ForumModel;
 use App\Models\MediaModel;
 use CodeIgniter\Files\File;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class TaskController extends BaseAPIController
 {
-	/**
-	 * @OA\Post(
-	 *   path="/forums/{id}/tasks",
-	 *   tags={"Tasks"},
-	 *   summary="Create task in forum",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=201, description="Created")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/forums/{id}/tasks",
+		tags: ["Tasks"],
+		summary: "Create task in forum",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(
+				required: ["judul"],
+				properties: [
+					new OAT\Property(property: "judul", type: "string"),
+					new OAT\Property(property: "deskripsi", type: "string"),
+					new OAT\Property(property: "tenggat_waktu", type: "string", format: "date-time"),
+					new OAT\Property(property: "file_url", type: "string", format: "uri")
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Created"),
+			new OAT\Response(response: 400, description: "Bad Request")
+		]
+	)]
 	public function store(int $forumId)
 	{
 		$rules = config('Validation')->taskStore;
@@ -40,15 +56,21 @@ class TaskController extends BaseAPIController
 		return $this->success($task, 'Created', null, 201);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/forums/{id}/tasks",
-	 *   tags={"Tasks"},
-	 *   summary="List tasks in forum",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/forums/{id}/tasks",
+		tags: ["Tasks"],
+		summary: "List tasks in forum",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "status", in: "query", required: false, schema: new OAT\Schema(type: "string", enum: ["todo","doing","done"])),
+			new OAT\Parameter(name: "q", in: "query", required: false, schema: new OAT\Schema(type: "string")),
+			new OAT\Parameter(name: "sort", in: "query", required: false, schema: new OAT\Schema(type: "string", enum: ["deadline","created_at"])),
+			new OAT\Parameter(name: "page", in: "query", required: false, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "per_page", in: "query", required: false, schema: new OAT\Schema(type: "integer"))
+		],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function index(int $forumId)
 	{
 		$status    = $this->request->getGet('status');
@@ -77,15 +99,17 @@ class TaskController extends BaseAPIController
 		return $this->success($data, null, $meta);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/tasks/{id}",
-	 *   tags={"Tasks"},
-	 *   summary="Show task",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/tasks/{id}",
+		tags: ["Tasks"],
+		summary: "Show task",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "OK"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function show(int $taskId)
 	{
 		$task = (new KanbanModel())->find($taskId);
@@ -95,15 +119,30 @@ class TaskController extends BaseAPIController
 		return $this->success($task);
 	}
 
-	/**
-	 * @OA\Patch(
-	 *   path="/tasks/{id}",
-	 *   tags={"Tasks"},
-	 *   summary="Update task",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Updated")
-	 * )
-	 */
+	#[OAT\Patch(
+		path: "/tasks/{id}",
+		tags: ["Tasks"],
+		summary: "Update task",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: false,
+			content: new OAT\JsonContent(
+				properties: [
+					new OAT\Property(property: "judul", type: "string"),
+					new OAT\Property(property: "deskripsi", type: "string"),
+					new OAT\Property(property: "tenggat_waktu", type: "string", format: "date-time"),
+					new OAT\Property(property: "status", type: "string", enum: ["todo","doing","done"]),
+					new OAT\Property(property: "file_url", type: "string", format: "uri")
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 200, description: "Updated"),
+			new OAT\Response(response: 400, description: "Bad Request"),
+			new OAT\Response(response: 403, description: "Forbidden")
+		]
+	)]
 	public function update(int $taskId)
 	{
 		$rules = config('Validation')->taskUpdate;
@@ -125,15 +164,17 @@ class TaskController extends BaseAPIController
 		return $this->success($model->find($taskId), 'Updated');
 	}
 
-	/**
-	 * @OA\Delete(
-	 *   path="/tasks/{id}",
-	 *   tags={"Tasks"},
-	 *   summary="Delete task",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Deleted")
-	 * )
-	 */
+	#[OAT\Delete(
+		path: "/tasks/{id}",
+		tags: ["Tasks"],
+		summary: "Delete task",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "Deleted"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function destroy(int $taskId)
 	{
 		$model = new KanbanModel();
@@ -148,15 +189,39 @@ class TaskController extends BaseAPIController
 		return $this->success(['ok' => true], 'Deleted');
 	}
 
-	/**
-	 * @OA\Post(
-	 *   path="/tasks/{id}/attachments",
-	 *   tags={"Tasks"},
-	 *   summary="Attach file or link to task",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=201, description="Created")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/tasks/{id}/attachments",
+		tags: ["Tasks"],
+		summary: "Attach file or link to task",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: [
+				new OAT\MediaType(
+					mediaType: "multipart/form-data",
+					schema: new OAT\Schema(
+						type: "object",
+						properties: [
+							new OAT\Property(property: "file", type: "string", format: "binary"),
+							new OAT\Property(property: "file_url", type: "string", format: "uri")
+						]
+					)
+				),
+				new OAT\MediaType(
+					mediaType: "application/json",
+					schema: new OAT\Schema(
+						type: "object",
+						properties: [new OAT\Property(property: "file_url", type: "string", format: "uri")]
+					)
+				)
+			]
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Created"),
+			new OAT\Response(response: 400, description: "Bad Request")
+		]
+	)]
 	public function attach(int $taskId)
 	{
 		$task = (new KanbanModel())->find($taskId);

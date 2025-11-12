@@ -6,18 +6,34 @@ use App\Models\ForumModel;
 use App\Models\AnggotaForumModel;
 use App\Models\KanbanModel;
 use CodeIgniter\Database\BaseBuilder;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class ForumController extends BaseAPIController
 {
-	/**
-	 * @OA\Post(
-	 *   path="/forums",
-	 *   tags={"Forums"},
-	 *   summary="Create forum",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=201, description="Created")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/forums",
+		tags: ["Forums"],
+		summary: "Create forum",
+		security: [["bearerAuth" => []]],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: new OAT\JsonContent(
+				required: ["nama"],
+				properties: [
+					new OAT\Property(property: "nama", type: "string"),
+					new OAT\Property(property: "deskripsi", type: "string"),
+					new OAT\Property(property: "jenis_forum", type: "string", enum: ["akademik","proyek","komunitas","lainnya"]),
+					new OAT\Property(property: "is_public", type: "integer", enum: [0,1])
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Created"),
+			new OAT\Response(response: 400, description: "Bad Request"),
+			new OAT\Response(response: 401, description: "Unauthorized")
+		]
+	)]
 	public function store()
 	{
 		$rules = config('Validation')->forumStore;
@@ -49,15 +65,20 @@ class ForumController extends BaseAPIController
 		return $this->success($forum, 'Created', null, 201);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/forums",
-	 *   tags={"Forums"},
-	 *   summary="List forums",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/forums",
+		tags: ["Forums"],
+		summary: "List forums",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "scope", in: "query", required: false, schema: new OAT\Schema(type: "string", enum: ["mine","public","all"])),
+			new OAT\Parameter(name: "q", in: "query", required: false, schema: new OAT\Schema(type: "string")),
+			new OAT\Parameter(name: "sort", in: "query", required: false, schema: new OAT\Schema(type: "string", enum: ["created_at","nama"])),
+			new OAT\Parameter(name: "page", in: "query", required: false, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "per_page", in: "query", required: false, schema: new OAT\Schema(type: "integer"))
+		],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function index()
 	{
 		$current    = $this->currentUser();
@@ -94,15 +115,16 @@ class ForumController extends BaseAPIController
 		return $this->success($results, null, $meta);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/forums/recommended",
-	 *   tags={"Forums"},
-	 *   summary="Recommended public forums",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/forums/recommended",
+		tags: ["Forums"],
+		summary: "Recommended public forums",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "limit", in: "query", required: false, schema: new OAT\Schema(type: "integer"))
+		],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function recommended()
 	{
 		$limit   = min(50, max(1, (int) ($this->request->getGet('limit') ?? 10)));
@@ -111,15 +133,19 @@ class ForumController extends BaseAPIController
 		return $this->success($data);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/forums/{id}",
-	 *   tags={"Forums"},
-	 *   summary="Show forum",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/forums/{id}",
+		tags: ["Forums"],
+		summary: "Show forum",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))
+		],
+		responses: [
+			new OAT\Response(response: 200, description: "OK"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function show(int $forumId)
 	{
 		$forum = (new ForumModel())->find($forumId);
@@ -138,15 +164,31 @@ class ForumController extends BaseAPIController
 		]);
 	}
 
-	/**
-	 * @OA\Patch(
-	 *   path="/forums/{id}",
-	 *   tags={"Forums"},
-	 *   summary="Update forum (admin)",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Updated")
-	 * )
-	 */
+	#[OAT\Patch(
+		path: "/forums/{id}",
+		tags: ["Forums"],
+		summary: "Update forum (admin)",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))
+		],
+		requestBody: new OAT\RequestBody(
+			required: false,
+			content: new OAT\JsonContent(
+				properties: [
+					new OAT\Property(property: "nama", type: "string"),
+					new OAT\Property(property: "deskripsi", type: "string"),
+					new OAT\Property(property: "jenis_forum", type: "string"),
+					new OAT\Property(property: "is_public", type: "integer", enum: [0,1]),
+				]
+			)
+		),
+		responses: [
+			new OAT\Response(response: 200, description: "Updated"),
+			new OAT\Response(response: 400, description: "Bad Request"),
+			new OAT\Response(response: 403, description: "Forbidden")
+		]
+	)]
 	public function update(int $forumId)
 	{
 		$rules = config('Validation')->forumUpdate;
@@ -161,15 +203,16 @@ class ForumController extends BaseAPIController
 		return $this->success($forum, 'Updated');
 	}
 
-	/**
-	 * @OA\Delete(
-	 *   path="/forums/{id}",
-	 *   tags={"Forums"},
-	 *   summary="Delete forum (admin)",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Deleted")
-	 * )
-	 */
+	#[OAT\Delete(
+		path: "/forums/{id}",
+		tags: ["Forums"],
+		summary: "Delete forum (admin)",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))
+		],
+		responses: [new OAT\Response(response: 200, description: "Deleted")]
+	)]
 	public function destroy(int $forumId)
 	{
 		$model = new ForumModel();

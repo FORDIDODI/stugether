@@ -4,18 +4,52 @@ namespace App\Controllers\API;
 
 use App\Models\MediaModel;
 use App\Models\ForumModel;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OAT;
 
 class MediaController extends BaseAPIController
 {
-	/**
-	 * @OA\Post(
-	 *   path="/media",
-	 *   tags={"Media"},
-	 *   summary="Upload media",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=201, description="Created")
-	 * )
-	 */
+	#[OAT\Post(
+		path: "/media",
+		tags: ["Media"],
+		summary: "Upload media",
+		security: [["bearerAuth" => []]],
+		requestBody: new OAT\RequestBody(
+			required: true,
+			content: [
+				new OAT\MediaType(
+					mediaType: "multipart/form-data",
+					schema: new OAT\Schema(
+						type: "object",
+						required: ["forum_id"],
+						properties: [
+							new OAT\Property(property: "forum_id", type: "integer"),
+							new OAT\Property(property: "note_id", type: "integer"),
+							new OAT\Property(property: "ref_id", type: "integer"),
+							new OAT\Property(property: "file", type: "string", format: "binary")
+						]
+					)
+				),
+				new OAT\MediaType(
+					mediaType: "application/json",
+					schema: new OAT\Schema(
+						type: "object",
+						required: ["forum_id","file_url"],
+						properties: [
+							new OAT\Property(property: "forum_id", type: "integer"),
+							new OAT\Property(property: "file_url", type: "string", format: "uri"),
+							new OAT\Property(property: "note_id", type: "integer"),
+							new OAT\Property(property: "ref_id", type: "integer")
+						]
+					)
+				)
+			]
+		),
+		responses: [
+			new OAT\Response(response: 201, description: "Created"),
+			new OAT\Response(response: 400, description: "Bad Request")
+		]
+	)]
 	public function store()
 	{
 		// Validate via PHP side to allow optional note/ref
@@ -50,15 +84,18 @@ class MediaController extends BaseAPIController
 		return $this->success((new MediaModel())->find($id), 'Created', null, 201);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/forums/{id}/media",
-	 *   tags={"Media"},
-	 *   summary="List forum media",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/forums/{id}/media",
+		tags: ["Media"],
+		summary: "List forum media",
+		security: [["bearerAuth" => []]],
+		parameters: [
+			new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "note_id", in: "query", required: false, schema: new OAT\Schema(type: "integer")),
+			new OAT\Parameter(name: "ref_id", in: "query", required: false, schema: new OAT\Schema(type: "integer"))
+		],
+		responses: [new OAT\Response(response: 200, description: "OK")]
+	)]
 	public function index(int $forumId)
 	{
 		$noteId = $this->request->getGet('note_id');
@@ -74,15 +111,17 @@ class MediaController extends BaseAPIController
 		return $this->success($data);
 	}
 
-	/**
-	 * @OA\Get(
-	 *   path="/media/{id}",
-	 *   tags={"Media"},
-	 *   summary="Show media",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="OK")
-	 * )
-	 */
+	#[OAT\Get(
+		path: "/media/{id}",
+		tags: ["Media"],
+		summary: "Show media",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "OK"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function show(int $mediaId)
 	{
 		$media = (new MediaModel())->find($mediaId);
@@ -92,15 +131,17 @@ class MediaController extends BaseAPIController
 		return $this->success($media);
 	}
 
-	/**
-	 * @OA\Delete(
-	 *   path="/media/{id}",
-	 *   tags={"Media"},
-	 *   summary="Delete media",
-	 *   security={{"bearerAuth":{}}},
-	 *   @OA\Response(response=200, description="Deleted")
-	 * )
-	 */
+	#[OAT\Delete(
+		path: "/media/{id}",
+		tags: ["Media"],
+		summary: "Delete media",
+		security: [["bearerAuth" => []]],
+		parameters: [new OAT\Parameter(name: "id", in: "path", required: true, schema: new OAT\Schema(type: "integer"))],
+		responses: [
+			new OAT\Response(response: 200, description: "Deleted"),
+			new OAT\Response(response: 404, description: "Not found")
+		]
+	)]
 	public function destroy(int $mediaId)
 	{
 		$model = new MediaModel();
