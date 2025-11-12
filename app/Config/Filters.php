@@ -12,6 +12,9 @@ use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\PageCache;
 use CodeIgniter\Filters\PerformanceMetrics;
 use CodeIgniter\Filters\SecureHeaders;
+use App\Filters\JwtAuthFilter;
+use App\Filters\ForumMemberFilter;
+use App\Filters\ForumAdminFilter;
 
 class Filters extends BaseFilters
 {
@@ -34,6 +37,10 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        // Custom application filters
+        'jwt'           => JwtAuthFilter::class,
+        'forumMember'   => ForumMemberFilter::class,
+        'forumAdmin'    => ForumAdminFilter::class,
     ];
 
     /**

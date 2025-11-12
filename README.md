@@ -66,3 +66,50 @@ Additionally, make sure that the following extensions are enabled in your PHP:
 - json (enabled by default - don't turn it off)
 - [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
 - [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+
+---
+
+## Stugether API (CI4 REST)
+
+- Auth: JWT Bearer (HS256) via `firebase/php-jwt`
+- Responses: JSON only with `{data, meta?, message}` or `{error:{code,message}}`
+- Uploads: `public/uploads` with URLs like `/uploads/...`
+
+### Quick Start
+1) Install deps:
+```bash
+composer install
+```
+2) Copy env:
+```bash
+cp env .env
+```
+3) Edit `.env`:
+```ini
+app.baseURL="http://localhost:8080/"
+JWT_SECRET="change_this_to_long_random_secret"
+CI_ENVIRONMENT=development
+```
+4) Run migrations:
+```bash
+php spark migrate
+```
+5) Serve:
+```bash
+php spark serve
+```
+
+### Swagger / OpenAPI
+- Generate spec:
+```bash
+php spark docs:generate
+```
+- Open UI: GET `/docs`
+
+### Tests
+```bash
+composer test
+```
+
+### Routes Summary
+See `app/Config/Routes.php` for the full list (no auto-routing). Public: `POST /auth/register`, `POST /auth/login`. All others require `Authorization: Bearer <token>`.

@@ -3,6 +3,10 @@
 namespace Config;
 
 use CodeIgniter\Config\BaseService;
+use App\Services\JWTService;
+use App\Services\PaginationService;
+use App\Services\DiscussionTreeService;
+use App\Services\AuthUserService;
 
 /**
  * Services Configuration file.
@@ -19,14 +23,51 @@ use CodeIgniter\Config\BaseService;
  */
 class Services extends BaseService
 {
-    /*
-     * public static function example($getShared = true)
-     * {
-     *     if ($getShared) {
-     *         return static::getSharedInstance('example');
-     *     }
-     *
-     *     return new \CodeIgniter\Example();
-     * }
+    /**
+     * JWT service for issuing and verifying tokens.
      */
+    public static function jwt(bool $getShared = true): JWTService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('jwt');
+        }
+
+        return new JWTService(env('JWT_SECRET', 'dev_secret_change_me'));
+    }
+
+    /**
+     * Pagination helper service to attach meta to responses.
+     */
+    public static function paginationSvc(bool $getShared = true): PaginationService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('paginationSvc');
+        }
+
+        return new PaginationService();
+    }
+
+    /**
+     * Discussion tree builder service for threaded discussions.
+     */
+    public static function discussionTree(bool $getShared = true): DiscussionTreeService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('discussionTree');
+        }
+
+        return new DiscussionTreeService();
+    }
+
+    /**
+     * Authenticated user holder for the current request lifecycle.
+     */
+    public static function authUser(bool $getShared = true): AuthUserService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('authUser');
+        }
+
+        return new AuthUserService();
+    }
 }

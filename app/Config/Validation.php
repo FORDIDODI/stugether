@@ -41,4 +41,87 @@ class Validation extends BaseConfig
     // --------------------------------------------------------------------
     // Rules
     // --------------------------------------------------------------------
+    /** @var array<string, array<string, string>> */
+    public array $authRegister = [
+        'nama'     => 'required|max_length[100]',
+        'email'    => 'required|valid_email|is_unique[users.email]',
+        'password' => 'required|min_length[8]',
+    ];
+
+    /** @var array<string, array<string, string>> */
+    public array $authLogin = [
+        'email'    => 'required|valid_email',
+        'password' => 'required',
+    ];
+
+    public array $forumStore = [
+        'nama'        => 'required|max_length[100]',
+        'jenis_forum' => 'permit_empty|in_list[akademik,proyek,komunitas,lainnya]',
+        'is_public'   => 'permit_empty|in_list[0,1]',
+        'deskripsi'   => 'permit_empty',
+    ];
+
+    public array $forumUpdate = [
+        'nama'        => 'permit_empty|max_length[100]',
+        'jenis_forum' => 'permit_empty|in_list[akademik,proyek,komunitas,lainnya]',
+        'is_public'   => 'permit_empty|in_list[0,1]',
+        'deskripsi'   => 'permit_empty',
+    ];
+
+    public array $forumJoin = [
+        'kode_undangan' => 'required|min_length[6]|max_length[10]',
+    ];
+
+    public array $memberUpdate = [
+        'allowed_upload' => 'required|in_list[0,1]',
+    ];
+
+    public array $taskStore = [
+        'judul'         => 'required|max_length[100]',
+        'deskripsi'     => 'permit_empty',
+        'tenggat_waktu' => 'permit_empty|valid_date[Y-m-d H:i:s]',
+        'file_url'      => 'permit_empty|valid_url',
+    ];
+
+    public array $taskUpdate = [
+        'judul'         => 'permit_empty|max_length[100]',
+        'deskripsi'     => 'permit_empty',
+        'tenggat_waktu' => 'permit_empty|valid_date[Y-m-d H:i:s]',
+        'status'        => 'permit_empty|in_list[todo,doing,done]',
+        'file_url'      => 'permit_empty|valid_url',
+    ];
+
+    public array $reminderStore = [
+        'title' => 'required|max_length[100]',
+        'waktu' => 'required|valid_date[Y-m-d H:i:s]',
+    ];
+
+    public array $discussionStore = [
+        'isi' => 'required',
+    ];
+
+    public array $discussionReply = [
+        'isi' => 'required',
+    ];
+
+    public array $noteStore = [
+        'judul'       => 'required|max_length[100]',
+        'kategori'    => 'permit_empty|max_length[50]',
+        'mata_kuliah' => 'permit_empty|max_length[100]',
+        'deskripsi'   => 'permit_empty',
+    ];
+
+    public array $noteUpdate = [
+        'judul'       => 'permit_empty|max_length[100]',
+        'kategori'    => 'permit_empty|max_length[50]',
+        'mata_kuliah' => 'permit_empty|max_length[100]',
+        'deskripsi'   => 'permit_empty',
+    ];
+
+    public array $mediaStore = [
+        'file'     => 'uploaded[file]|max_size[file,20480]',
+        'forum_id' => 'required|is_natural_no_zero',
+        'note_id'  => 'permit_empty|is_natural',
+        'ref_id'   => 'permit_empty|is_natural',
+    ];
 }
