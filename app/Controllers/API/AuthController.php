@@ -55,13 +55,14 @@ class AuthController extends BaseAPIController
 	#[OAT\Post(
 		path: "/auth/login",
 		tags: ["Auth"],
-		summary: "Login",
+		summary: "Login with email or NIM",
 		requestBody: new OAT\RequestBody(
 			required: true,
 			content: new OAT\JsonContent(
-				required: ["email", "password"],
+				required: ["password"],
 				properties: [
-					new OAT\Property(property: "email", type: "string", format: "email"),
+					new OAT\Property(property: "email", type: "string", format: "email", description: "Email (optional if nim provided)"),
+					new OAT\Property(property: "nim", type: "string", description: "NIM (optional if email provided)"),
 					new OAT\Property(property: "password", type: "string", format: "password")
 				]
 			)
@@ -74,18 +75,31 @@ class AuthController extends BaseAPIController
 	)]
 	public function login()
 	{
-		$rules = config('Validation')->authLogin;
-		if (! $this->validate($rules)) {
-			return $this->fail(implode('; ', $this->validator->getErrors()), 400);
+		$data = $this->request->getJSON(true) ?? $this->request->getPost();
+		$email = $data['email'] ?? null;
+		$nim = $data['nim'] ?? null;
+		$password = $data['password'] ?? null;
+
+		// Validate - either email or NIM must be provided
+		if ((!$email && !$nim) || !$password) {
+			return $this->fail('Email or NIM and password are required', 400);
 		}
 
-		$data  = $this->request->getJSON(true) ?? $this->request->getPost();
-		$email = $data['email'];
-		$pass  = $data['password'];
-
 		$model = new UserModel();
-		$user  = $model->where('email', $email)->first();
-		if (! $user || ! password_verify($pass, (string) $user->password)) {
+		$user = null;
+
+		// Try to find user by email first
+		if ($email) {
+			$user = $model->where('email', $email)->first();
+		}
+		
+		// If not found by email, try NIM
+		if (!$user && $nim) {
+			$user = $model->where('nim', $nim)->first();
+		}
+
+		// Verify user exists and password matches
+		if (!$user || !password_verify($password, (string) $user->password)) {
 			return $this->fail('Invalid credentials', 401);
 		}
 
