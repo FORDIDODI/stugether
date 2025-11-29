@@ -1,1932 +1,1784 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-        "title": "Stugether API",
-        "version": "1.0.0"
-    },
-    "paths": {
-        "/auth/register": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Register user",
-                "operationId": "2c8e53e170a04cc00e7d15a22f5c34b2",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "nama",
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "nama": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Stugether API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Register user",
+        "operationId": "2c8e53e170a04cc00e7d15a22f5c34b2",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["nama", "email", "password"],
+                "properties": {
+                  "nama": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
                 },
-                "responses": {
-                    "201": {
-                        "description": "Registered"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                }
+                "type": "object"
+              }
             }
+          }
         },
-        "/auth/login": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Login",
-                "operationId": "1784aa56095d31e82d3f54404c2cd454",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Logged in"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    }
-                }
-            }
-        },
-        "/auth/logout": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Logout (stateless)",
-                "operationId": "24d027a2fbd983aaca625b4d6fe99b5e",
-                "responses": {
-                    "200": {
-                        "description": "Logged out"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/auth/me": {
-            "get": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Current user",
-                "operationId": "b71a4d2980faca0abf2955930b5594e4",
-                "responses": {
-                    "200": {
-                        "description": "User"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}/discussions": {
-            "get": {
-                "tags": [
-                    "Discussions"
-                ],
-                "summary": "List discussions (threaded by default)",
-                "operationId": "bf0dbf28d25c397242184ada927512aa",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "threaded",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "q",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Discussions"
-                ],
-                "summary": "Create discussion",
-                "operationId": "fd0fcb2417b03d75059a75647fb6c037",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "isi"
-                                ],
-                                "properties": {
-                                    "isi": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/discussions/{id}/replies": {
-            "post": {
-                "tags": [
-                    "Discussions"
-                ],
-                "summary": "Reply to discussion",
-                "operationId": "acb2452b2b838d0565c74bfa169b3ebf",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "isi"
-                                ],
-                                "properties": {
-                                    "isi": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/discussions/{id}": {
-            "get": {
-                "tags": [
-                    "Discussions"
-                ],
-                "summary": "Show discussion",
-                "operationId": "95201c4dd95507b1eacbaea03ebf1bbd",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Discussions"
-                ],
-                "summary": "Delete discussion",
-                "operationId": "54dda515b051ee29e4e5236307a5e4c4",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Deleted"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "patch": {
-                "tags": [
-                    "Discussions"
-                ],
-                "summary": "Update discussion",
-                "operationId": "6750a04784c81d41479338c79f57dc0a",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "isi": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums": {
-            "get": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "List forums",
-                "operationId": "a3d6afb071d6291527c85827e54e11c3",
-                "parameters": [
-                    {
-                        "name": "scope",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "mine",
-                                "public",
-                                "all"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "q",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sort",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "created_at",
-                                "nama"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "Create forum",
-                "operationId": "fb1118d607a9ed2d476d40a9744a2548",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "nama"
-                                ],
-                                "properties": {
-                                    "nama": {
-                                        "type": "string"
-                                    },
-                                    "deskripsi": {
-                                        "type": "string"
-                                    },
-                                    "jenis_forum": {
-                                        "type": "string",
-                                        "enum": [
-                                            "akademik",
-                                            "proyek",
-                                            "komunitas",
-                                            "lainnya"
-                                        ]
-                                    },
-                                    "is_public": {
-                                        "type": "integer",
-                                        "enum": [
-                                            0,
-                                            1
-                                        ]
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/recommended": {
-            "get": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "Recommended public forums",
-                "operationId": "b28e0877b919c8b1102f20b64975fa44",
-                "parameters": [
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}": {
-            "get": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "Show forum",
-                "operationId": "d5cca19360614be34872c8d1125763be",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "Delete forum (admin)",
-                "operationId": "d7115cc63ac21168b742e03e8165a253",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Deleted"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "patch": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "Update forum (admin)",
-                "operationId": "25b96ffda210e8ca31fd29d79485e09d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "nama": {
-                                        "type": "string"
-                                    },
-                                    "deskripsi": {
-                                        "type": "string"
-                                    },
-                                    "jenis_forum": {
-                                        "type": "string"
-                                    },
-                                    "is_public": {
-                                        "type": "integer",
-                                        "enum": [
-                                            0,
-                                            1
-                                        ]
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}/join": {
-            "post": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "Join forum by kode_undangan",
-                "operationId": "72db21ac6a6d47fadd02458d42a1ff65",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "kode_undangan"
-                                ],
-                                "properties": {
-                                    "kode_undangan": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Joined"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}/leave": {
-            "post": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "Leave forum",
-                "operationId": "a5d6fb0302daa0122905348ce613175d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Left"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}/members": {
-            "get": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "List forum members",
-                "operationId": "04a10c857011b69832634dd4e72cd818",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}/members/{userId}": {
-            "patch": {
-                "tags": [
-                    "Forums"
-                ],
-                "summary": "Update member allowed_upload (admin)",
-                "operationId": "6a0a7df4bb4920822b706917ee66c613",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "allowed_upload"
-                                ],
-                                "properties": {
-                                    "allowed_upload": {
-                                        "type": "integer",
-                                        "enum": [
-                                            0,
-                                            1
-                                        ]
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/media": {
-            "post": {
-                "tags": [
-                    "Media"
-                ],
-                "summary": "Upload media",
-                "operationId": "d175214f742667f943c7e384e77307fb",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "forum_id"
-                                ],
-                                "properties": {
-                                    "forum_id": {
-                                        "type": "integer"
-                                    },
-                                    "note_id": {
-                                        "type": "integer"
-                                    },
-                                    "ref_id": {
-                                        "type": "integer"
-                                    },
-                                    "file": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "forum_id",
-                                    "file_url"
-                                ],
-                                "properties": {
-                                    "forum_id": {
-                                        "type": "integer"
-                                    },
-                                    "file_url": {
-                                        "type": "string",
-                                        "format": "uri"
-                                    },
-                                    "note_id": {
-                                        "type": "integer"
-                                    },
-                                    "ref_id": {
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}/media": {
-            "get": {
-                "tags": [
-                    "Media"
-                ],
-                "summary": "List forum media",
-                "operationId": "7c2ff218c1b8009dd340a136c2c88648",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "note_id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "ref_id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/media/{id}": {
-            "get": {
-                "tags": [
-                    "Media"
-                ],
-                "summary": "Show media",
-                "operationId": "3fe5664fe55c8d198b9aa15a2e65cfb0",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Media"
-                ],
-                "summary": "Delete media",
-                "operationId": "16047dc66e117c893da50c2a8387e6bf",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Deleted"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}/notes": {
-            "get": {
-                "tags": [
-                    "Notes"
-                ],
-                "summary": "List notes",
-                "operationId": "188d6b527aa138cefd6df52f9f9ea132",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "kategori",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "mata_kuliah",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "q",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Notes"
-                ],
-                "summary": "Create note",
-                "operationId": "8e51e09fc1d263b0dfb7b04e85f80a32",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "judul"
-                                ],
-                                "properties": {
-                                    "judul": {
-                                        "type": "string"
-                                    },
-                                    "kategori": {
-                                        "type": "string"
-                                    },
-                                    "mata_kuliah": {
-                                        "type": "string"
-                                    },
-                                    "deskripsi": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/notes/{id}": {
-            "get": {
-                "tags": [
-                    "Notes"
-                ],
-                "summary": "Show note",
-                "operationId": "7d629a705496be7f3642de6325671ec8",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Notes"
-                ],
-                "summary": "Delete note",
-                "operationId": "63269f6fc62cef40c792d36c0c3097ee",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Deleted"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "patch": {
-                "tags": [
-                    "Notes"
-                ],
-                "summary": "Update note",
-                "operationId": "37c3da3171098509d1783d656dbc1c7e",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "judul": {
-                                        "type": "string"
-                                    },
-                                    "kategori": {
-                                        "type": "string"
-                                    },
-                                    "mata_kuliah": {
-                                        "type": "string"
-                                    },
-                                    "deskripsi": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/notifications": {
-            "get": {
-                "tags": [
-                    "Notifications"
-                ],
-                "summary": "Get forum notifications summary",
-                "operationId": "fb28045d0ff0b9499cb037dd2708f91b",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/tasks/{id}/reminder": {
-            "post": {
-                "tags": [
-                    "Reminders"
-                ],
-                "summary": "Create reminder for task",
-                "operationId": "ef5cd72e0d097787afff91f1313007d9",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "title",
-                                    "waktu"
-                                ],
-                                "properties": {
-                                    "title": {
-                                        "type": "string"
-                                    },
-                                    "waktu": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "409": {
-                        "description": "Conflict"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/reminders": {
-            "get": {
-                "tags": [
-                    "Reminders"
-                ],
-                "summary": "List my reminders",
-                "operationId": "da3181d3a0302b6d23cb52d5d77b1dad",
-                "parameters": [
-                    {
-                        "name": "upcoming",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/reminders/{id}": {
-            "delete": {
-                "tags": [
-                    "Reminders"
-                ],
-                "summary": "Delete reminder",
-                "operationId": "c2b33e16106872ceb375b5e496afe30f",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Deleted"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/search": {
-            "get": {
-                "tags": [
-                    "Search"
-                ],
-                "summary": "Search across entities",
-                "operationId": "9dbbed396d2ae80ffd95b0ccc3a2a942",
-                "parameters": [
-                    {
-                        "name": "scope",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "forums",
-                                "tasks",
-                                "notes",
-                                "discussions",
-                                "all"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "q",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/forums/{id}/tasks": {
-            "get": {
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "List tasks in forum",
-                "operationId": "6cbbba4ae45974fb78b6f2e214b51835",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "todo",
-                                "doing",
-                                "done"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "q",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "sort",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "deadline",
-                                "created_at"
-                            ]
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Create task in forum",
-                "operationId": "5046c2ea26c463f7c87403ea76142cc6",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "judul"
-                                ],
-                                "properties": {
-                                    "judul": {
-                                        "type": "string"
-                                    },
-                                    "deskripsi": {
-                                        "type": "string"
-                                    },
-                                    "tenggat_waktu": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    "file_url": {
-                                        "type": "string",
-                                        "format": "uri"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/tasks/{id}": {
-            "get": {
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Show task",
-                "operationId": "bd18ece4685eef6b57d4f92c550df24c",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Delete task",
-                "operationId": "d01032fffea9582e9cd58418876e5040",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Deleted"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "patch": {
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Update task",
-                "operationId": "63ff739ccfe9704249952ef6f7007911",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "judul": {
-                                        "type": "string"
-                                    },
-                                    "deskripsi": {
-                                        "type": "string"
-                                    },
-                                    "tenggat_waktu": {
-                                        "type": "string",
-                                        "format": "date-time"
-                                    },
-                                    "status": {
-                                        "type": "string",
-                                        "enum": [
-                                            "todo",
-                                            "doing",
-                                            "done"
-                                        ]
-                                    },
-                                    "file_url": {
-                                        "type": "string",
-                                        "format": "uri"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/tasks/{id}/attachments": {
-            "post": {
-                "tags": [
-                    "Tasks"
-                ],
-                "summary": "Attach file or link to task",
-                "operationId": "ee2f89728799b8cf285860f6755b15b7",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "file": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "file_url": {
-                                        "type": "string",
-                                        "format": "uri"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        },
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "file_url": {
-                                        "type": "string",
-                                        "format": "uri"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/users/{id}": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Show user",
-                "operationId": "d4a1e19cc7a510d4a6b3d122523ca5e0",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User"
-                    },
-                    "404": {
-                        "description": "Not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Update user (self only)",
-                "operationId": "113c41c4b35f62238cd9e894739bceb1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "nim": {
-                                        "type": "string"
-                                    },
-                                    "nama": {
-                                        "type": "string"
-                                    },
-                                    "kelas": {
-                                        "type": "string"
-                                    },
-                                    "semester": {
-                                        "type": "integer"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Updated"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
+        "responses": {
+          "201": {
+            "description": "Registered"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
         }
+      }
     },
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
+    "/auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Login",
+        "operationId": "1784aa56095d31e82d3f54404c2cd454",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "type": "object"
+              }
             }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged in"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
         }
+      }
     },
-    "tags": [
-        {
-            "name": "Auth",
-            "description": "Auth"
+    "/auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Logout (stateless)",
+        "operationId": "24d027a2fbd983aaca625b4d6fe99b5e",
+        "responses": {
+          "200": {
+            "description": "Logged out"
+          }
         },
-        {
-            "name": "Discussions",
-            "description": "Discussions"
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Current user",
+        "operationId": "b71a4d2980faca0abf2955930b5594e4",
+        "responses": {
+          "200": {
+            "description": "User"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
         },
-        {
-            "name": "Forums",
-            "description": "Forums"
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}/discussions": {
+      "get": {
+        "tags": ["Discussions"],
+        "summary": "List discussions (threaded by default)",
+        "operationId": "bf0dbf28d25c397242184ada927512aa",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "threaded",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
         },
-        {
-            "name": "Media",
-            "description": "Media"
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Discussions"],
+        "summary": "Create discussion",
+        "operationId": "fd0fcb2417b03d75059a75647fb6c037",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["isi"],
+                "properties": {
+                  "isi": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
         },
-        {
-            "name": "Notes",
-            "description": "Notes"
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
         },
-        {
-            "name": "Notifications",
-            "description": "Notifications"
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/discussions/{id}/replies": {
+      "post": {
+        "tags": ["Discussions"],
+        "summary": "Reply to discussion",
+        "operationId": "acb2452b2b838d0565c74bfa169b3ebf",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["isi"],
+                "properties": {
+                  "isi": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
         },
-        {
-            "name": "Reminders",
-            "description": "Reminders"
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
         },
-        {
-            "name": "Search",
-            "description": "Search"
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/discussions/{id}": {
+      "get": {
+        "tags": ["Discussions"],
+        "summary": "Show discussion",
+        "operationId": "95201c4dd95507b1eacbaea03ebf1bbd",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          }
         },
-        {
-            "name": "Tasks",
-            "description": "Tasks"
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Discussions"],
+        "summary": "Delete discussion",
+        "operationId": "54dda515b051ee29e4e5236307a5e4c4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
         },
-        {
-            "name": "Users",
-            "description": "Users"
-        }
-    ]
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["Discussions"],
+        "summary": "Update discussion",
+        "operationId": "6750a04784c81d41479338c79f57dc0a",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "isi": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums": {
+      "get": {
+        "tags": ["Forums"],
+        "summary": "List forums",
+        "operationId": "a3d6afb071d6291527c85827e54e11c3",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["mine", "public", "all"]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["created_at", "nama"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Forums"],
+        "summary": "Create forum",
+        "operationId": "fb1118d607a9ed2d476d40a9744a2548",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["nama"],
+                "properties": {
+                  "nama": {
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "type": "string"
+                  },
+                  "jenis_forum": {
+                    "type": "string",
+                    "enum": ["publik", "privat"],
+                    "description": "Jenis forum berdasarkan visibilitas, 'publik' atau 'privat'."
+                  },
+                  "is_public": {
+                    "type": "integer",
+                    "enum": [0, 1]
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/recommended": {
+      "get": {
+        "tags": ["Forums"],
+        "summary": "Recommended public forums",
+        "operationId": "b28e0877b919c8b1102f20b64975fa44",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}": {
+      "get": {
+        "tags": ["Forums"],
+        "summary": "Show forum",
+        "operationId": "d5cca19360614be34872c8d1125763be",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Forums"],
+        "summary": "Delete forum (admin)",
+        "operationId": "d7115cc63ac21168b742e03e8165a253",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["Forums"],
+        "summary": "Update forum (admin)",
+        "operationId": "25b96ffda210e8ca31fd29d79485e09d",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "nama": {
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "type": "string"
+                  },
+                  "jenis_forum": {
+                    "type": "string",
+                    "enum": ["publik", "privat"],
+                    "description": "Jenis forum berdasarkan visibilitas, 'publik' atau 'privat'."
+                  },
+                  "is_public": {
+                    "type": "integer",
+                    "enum": [0, 1]
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}/join": {
+      "post": {
+        "tags": ["Forums"],
+        "summary": "Join forum by kode_undangan",
+        "operationId": "72db21ac6a6d47fadd02458d42a1ff65",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["kode_undangan"],
+                "properties": {
+                  "kode_undangan": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Joined"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}/leave": {
+      "post": {
+        "tags": ["Forums"],
+        "summary": "Leave forum",
+        "operationId": "a5d6fb0302daa0122905348ce613175d",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Left"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}/members": {
+      "get": {
+        "tags": ["Forums"],
+        "summary": "List forum members",
+        "operationId": "04a10c857011b69832634dd4e72cd818",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}/members/{userId}": {
+      "patch": {
+        "tags": ["Forums"],
+        "summary": "Update member allowed_upload (admin)",
+        "operationId": "6a0a7df4bb4920822b706917ee66c613",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["allowed_upload"],
+                "properties": {
+                  "allowed_upload": {
+                    "type": "integer",
+                    "enum": [0, 1]
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/media": {
+      "post": {
+        "tags": ["Media"],
+        "summary": "Upload media",
+        "operationId": "d175214f742667f943c7e384e77307fb",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["forum_id"],
+                "properties": {
+                  "forum_id": {
+                    "type": "integer"
+                  },
+                  "note_id": {
+                    "type": "integer"
+                  },
+                  "ref_id": {
+                    "type": "integer"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "required": ["forum_id", "file_url"],
+                "properties": {
+                  "forum_id": {
+                    "type": "integer"
+                  },
+                  "file_url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "note_id": {
+                    "type": "integer"
+                  },
+                  "ref_id": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}/media": {
+      "get": {
+        "tags": ["Media"],
+        "summary": "List forum media",
+        "operationId": "7c2ff218c1b8009dd340a136c2c88648",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "note_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ref_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/media/{id}": {
+      "get": {
+        "tags": ["Media"],
+        "summary": "Show media",
+        "operationId": "3fe5664fe55c8d198b9aa15a2e65cfb0",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Media"],
+        "summary": "Delete media",
+        "operationId": "16047dc66e117c893da50c2a8387e6bf",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}/notes": {
+      "get": {
+        "tags": ["Notes"],
+        "summary": "List notes",
+        "operationId": "188d6b527aa138cefd6df52f9f9ea132",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "kategori",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mata_kuliah",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Notes"],
+        "summary": "Create note",
+        "operationId": "8e51e09fc1d263b0dfb7b04e85f80a32",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["judul"],
+                "properties": {
+                  "judul": {
+                    "type": "string"
+                  },
+                  "kategori": {
+                    "type": "string"
+                  },
+                  "mata_kuliah": {
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/notes/{id}": {
+      "get": {
+        "tags": ["Notes"],
+        "summary": "Show note",
+        "operationId": "7d629a705496be7f3642de6325671ec8",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Notes"],
+        "summary": "Delete note",
+        "operationId": "63269f6fc62cef40c792d36c0c3097ee",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["Notes"],
+        "summary": "Update note",
+        "operationId": "37c3da3171098509d1783d656dbc1c7e",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "judul": {
+                    "type": "string"
+                  },
+                  "kategori": {
+                    "type": "string"
+                  },
+                  "mata_kuliah": {
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": ["Notifications"],
+        "summary": "Get forum notifications summary",
+        "operationId": "fb28045d0ff0b9499cb037dd2708f91b",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tasks/{id}/reminder": {
+      "post": {
+        "tags": ["Reminders"],
+        "summary": "Create reminder for task",
+        "operationId": "ef5cd72e0d097787afff91f1313007d9",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["title", "waktu"],
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "waktu": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/reminders": {
+      "get": {
+        "tags": ["Reminders"],
+        "summary": "List my reminders",
+        "operationId": "da3181d3a0302b6d23cb52d5d77b1dad",
+        "parameters": [
+          {
+            "name": "upcoming",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/reminders/{id}": {
+      "delete": {
+        "tags": ["Reminders"],
+        "summary": "Delete reminder",
+        "operationId": "c2b33e16106872ceb375b5e496afe30f",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": ["Search"],
+        "summary": "Search across entities",
+        "operationId": "9dbbed396d2ae80ffd95b0ccc3a2a942",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["forums", "tasks", "notes", "discussions", "all"]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/forums/{id}/tasks": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "List tasks in forum",
+        "operationId": "6cbbba4ae45974fb78b6f2e214b51835",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["todo", "doing", "done"]
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["deadline", "created_at"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Create task in forum",
+        "operationId": "5046c2ea26c463f7c87403ea76142cc6",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["judul"],
+                "properties": {
+                  "judul": {
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "type": "string"
+                  },
+                  "tenggat_waktu": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "file_url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "Show task",
+        "operationId": "bd18ece4685eef6b57d4f92c550df24c",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "Delete task",
+        "operationId": "d01032fffea9582e9cd58418876e5040",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "Update task",
+        "operationId": "63ff739ccfe9704249952ef6f7007911",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "judul": {
+                    "type": "string"
+                  },
+                  "deskripsi": {
+                    "type": "string"
+                  },
+                  "tenggat_waktu": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": ["todo", "doing", "done"]
+                  },
+                  "file_url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tasks/{id}/attachments": {
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "Attach file or link to task",
+        "operationId": "ee2f89728799b8cf285860f6755b15b7",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "file_url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "file_url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Show user",
+        "operationId": "d4a1e19cc7a510d4a6b3d122523ca5e0",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Update user (self only)",
+        "operationId": "113c41c4b35f62238cd9e894739bceb1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "nim": {
+                    "type": "string"
+                  },
+                  "nama": {
+                    "type": "string"
+                  },
+                  "kelas": {
+                    "type": "string"
+                  },
+                  "semester": {
+                    "type": "integer"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "bearerFormat": "JWT",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Auth"
+    },
+    {
+      "name": "Discussions",
+      "description": "Discussions"
+    },
+    {
+      "name": "Forums",
+      "description": "Forums"
+    },
+    {
+      "name": "Media",
+      "description": "Media"
+    },
+    {
+      "name": "Notes",
+      "description": "Notes"
+    },
+    {
+      "name": "Notifications",
+      "description": "Notifications"
+    },
+    {
+      "name": "Reminders",
+      "description": "Reminders"
+    },
+    {
+      "name": "Search",
+      "description": "Search"
+    },
+    {
+      "name": "Tasks",
+      "description": "Tasks"
+    },
+    {
+      "name": "Users",
+      "description": "Users"
+    }
+  ]
 }
