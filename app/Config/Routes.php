@@ -75,6 +75,12 @@ $routes->group('', ['filter' => 'jwt'], static function (RouteCollection $routes
 	// Notifications
 	$routes->get('notifications', 'API\NotificationController::index');
 	// (Optional v1.1) TODO: GET /notifications/stream - SSE stream in the future
+
+	// Counts
+	$routes->get('counts', 'API\CountController::index');
+	$routes->get('counts/detailed', 'API\CountController::detailed');
+	$routes->get('counts/forums', 'API\CountController::forums');
+	$routes->get('counts/(:segment)', 'API\CountController::show/$1');
 });
 
 // Swagger Docs

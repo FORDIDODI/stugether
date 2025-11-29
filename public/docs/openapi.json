@@ -7,7 +7,9 @@
     "paths": {
         "/auth/register": {
             "post": {
-        "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "Register user",
                 "operationId": "2c8e53e170a04cc00e7d15a22f5c34b2",
                 "requestBody": {
@@ -15,30 +17,34 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["nim", "nama", "kelas", "semester", "email", "password"],
+                                "required": [
+                                    "nim",
+                                    "nama",
+                                    "kelas",
+                                    "semester",
+                                    "email",
+                                    "password"
+                                ],
                                 "properties": {
-                  "nim": {
-                    "type": "string",
-                    "description": "Nomor Induk Mahasiswa"
-                  },
+                                    "nim": {
+                                        "type": "string"
+                                    },
                                     "nama": {
                                         "type": "string"
                                     },
-                  "kelas": {
-                    "type": "string"
-                  },
-                  "semester": {
-                    "type": "integer",
-                    "minimum": 1
-                  },
+                                    "kelas": {
+                                        "type": "string"
+                                    },
+                                    "semester": {
+                                        "type": "integer"
+                                    },
                                     "email": {
                                         "type": "string",
                                         "format": "email"
                                     },
                                     "password": {
                                         "type": "string",
-                    "format": "password",
-                    "minLength": 8
+                                        "format": "password"
                                     }
                                 },
                                 "type": "object"
@@ -58,7 +64,9 @@
         },
         "/auth/login": {
             "post": {
-        "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "Login",
                 "operationId": "1784aa56095d31e82d3f54404c2cd454",
                 "requestBody": {
@@ -66,7 +74,10 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["email", "password"],
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
                                 "properties": {
                                     "email": {
                                         "type": "string",
@@ -97,7 +108,9 @@
         },
         "/auth/logout": {
             "post": {
-        "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "Logout (stateless)",
                 "operationId": "24d027a2fbd983aaca625b4d6fe99b5e",
                 "responses": {
@@ -114,7 +127,9 @@
         },
         "/auth/me": {
             "get": {
-        "tags": ["Auth"],
+                "tags": [
+                    "Auth"
+                ],
                 "summary": "Current user",
                 "operationId": "b71a4d2980faca0abf2955930b5594e4",
                 "responses": {
@@ -132,9 +147,367 @@
                 ]
             }
         },
+        "/counts": {
+            "get": {
+                "tags": [
+                    "Counts"
+                ],
+                "summary": "Get counts for all entities",
+                "operationId": "9deb34bf9865f7ca079f6a52280755ab",
+                "responses": {
+                    "200": {
+                        "description": "All entity counts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "users": {
+                                                    "type": "integer",
+                                                    "example": 50
+                                                },
+                                                "forums": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "tasks": {
+                                                    "type": "integer",
+                                                    "example": 25
+                                                },
+                                                "reminders": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "discussions": {
+                                                    "type": "integer",
+                                                    "example": 45
+                                                },
+                                                "notes": {
+                                                    "type": "integer",
+                                                    "example": 30
+                                                },
+                                                "media": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "members": {
+                                                    "type": "integer",
+                                                    "example": 75
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/counts/{entity}": {
+            "get": {
+                "tags": [
+                    "Counts"
+                ],
+                "summary": "Get count for a specific entity",
+                "operationId": "42a9da5276365441c4f91375219eb500",
+                "parameters": [
+                    {
+                        "name": "entity",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "users",
+                                "forums",
+                                "tasks",
+                                "reminders",
+                                "discussions",
+                                "notes",
+                                "media",
+                                "members"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Entity count",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "entity": {
+                                                    "type": "string",
+                                                    "example": "users"
+                                                },
+                                                "count": {
+                                                    "type": "integer",
+                                                    "example": 50
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid entity",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "properties": {
+                                                "code": {
+                                                    "type": "integer",
+                                                    "example": 400
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Invalid entity. Valid entities: users, forums, tasks, reminders, discussions, notes, media, members"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/counts/detailed": {
+            "get": {
+                "tags": [
+                    "Counts"
+                ],
+                "summary": "Get detailed statistics for all entities",
+                "operationId": "8b998a4c95004f0b8ebf9c8a7a1ddd1f",
+                "responses": {
+                    "200": {
+                        "description": "Detailed statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "summary": {
+                                                    "properties": {
+                                                        "users": {
+                                                            "type": "integer",
+                                                            "example": 50
+                                                        },
+                                                        "forums": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "tasks": {
+                                                            "type": "integer",
+                                                            "example": 25
+                                                        },
+                                                        "reminders": {
+                                                            "type": "integer",
+                                                            "example": 8
+                                                        },
+                                                        "discussions": {
+                                                            "type": "integer",
+                                                            "example": 45
+                                                        },
+                                                        "notes": {
+                                                            "type": "integer",
+                                                            "example": 30
+                                                        },
+                                                        "media": {
+                                                            "type": "integer",
+                                                            "example": 15
+                                                        },
+                                                        "members": {
+                                                            "type": "integer",
+                                                            "example": 75
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "tasks_by_status": {
+                                                    "properties": {
+                                                        "todo": {
+                                                            "type": "integer",
+                                                            "example": 10
+                                                        },
+                                                        "doing": {
+                                                            "type": "integer",
+                                                            "example": 8
+                                                        },
+                                                        "done": {
+                                                            "type": "integer",
+                                                            "example": 7
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "forums_by_type": {
+                                                    "properties": {
+                                                        "akademik": {
+                                                            "type": "integer",
+                                                            "example": 5
+                                                        },
+                                                        "proyek": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        },
+                                                        "komunitas": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        },
+                                                        "lainnya": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "forums_by_visibility": {
+                                                    "properties": {
+                                                        "public": {
+                                                            "type": "integer",
+                                                            "example": 7
+                                                        },
+                                                        "private": {
+                                                            "type": "integer",
+                                                            "example": 3
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/counts/forums": {
+            "get": {
+                "tags": [
+                    "Counts"
+                ],
+                "summary": "Get detailed statistics for each forum",
+                "operationId": "8d53347b071ed41e3b604f214e9e4ea0",
+                "responses": {
+                    "200": {
+                        "description": "Forum statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "forum_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "nama": {
+                                                        "type": "string",
+                                                        "example": "Forum Akademik"
+                                                    },
+                                                    "jenis_forum": {
+                                                        "type": "string",
+                                                        "example": "akademik"
+                                                    },
+                                                    "is_public": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "members": {
+                                                        "type": "integer",
+                                                        "example": 15
+                                                    },
+                                                    "tasks": {
+                                                        "type": "integer",
+                                                        "example": 8
+                                                    },
+                                                    "discussions": {
+                                                        "type": "integer",
+                                                        "example": 12
+                                                    },
+                                                    "notes": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "media": {
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/forums/{id}/discussions": {
             "get": {
-        "tags": ["Discussions"],
+                "tags": [
+                    "Discussions"
+                ],
                 "summary": "List discussions (threaded by default)",
                 "operationId": "bf0dbf28d25c397242184ada927512aa",
                 "parameters": [
@@ -191,7 +564,9 @@
                 ]
             },
             "post": {
-        "tags": ["Discussions"],
+                "tags": [
+                    "Discussions"
+                ],
                 "summary": "Create discussion",
                 "operationId": "fd0fcb2417b03d75059a75647fb6c037",
                 "parameters": [
@@ -209,7 +584,9 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["isi"],
+                                "required": [
+                                    "isi"
+                                ],
                                 "properties": {
                                     "isi": {
                                         "type": "string"
@@ -237,7 +614,9 @@
         },
         "/discussions/{id}/replies": {
             "post": {
-        "tags": ["Discussions"],
+                "tags": [
+                    "Discussions"
+                ],
                 "summary": "Reply to discussion",
                 "operationId": "acb2452b2b838d0565c74bfa169b3ebf",
                 "parameters": [
@@ -255,7 +634,9 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["isi"],
+                                "required": [
+                                    "isi"
+                                ],
                                 "properties": {
                                     "isi": {
                                         "type": "string"
@@ -283,7 +664,9 @@
         },
         "/discussions/{id}": {
             "get": {
-        "tags": ["Discussions"],
+                "tags": [
+                    "Discussions"
+                ],
                 "summary": "Show discussion",
                 "operationId": "95201c4dd95507b1eacbaea03ebf1bbd",
                 "parameters": [
@@ -311,7 +694,9 @@
                 ]
             },
             "delete": {
-        "tags": ["Discussions"],
+                "tags": [
+                    "Discussions"
+                ],
                 "summary": "Delete discussion",
                 "operationId": "54dda515b051ee29e4e5236307a5e4c4",
                 "parameters": [
@@ -339,7 +724,9 @@
                 ]
             },
             "patch": {
-        "tags": ["Discussions"],
+                "tags": [
+                    "Discussions"
+                ],
                 "summary": "Update discussion",
                 "operationId": "6750a04784c81d41479338c79f57dc0a",
                 "parameters": [
@@ -384,7 +771,9 @@
         },
         "/forums": {
             "get": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "List forums",
                 "operationId": "a3d6afb071d6291527c85827e54e11c3",
                 "parameters": [
@@ -394,7 +783,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-              "enum": ["mine", "public", "all"]
+                            "enum": [
+                                "mine",
+                                "public",
+                                "all"
+                            ]
                         }
                     },
                     {
@@ -411,7 +804,10 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-              "enum": ["created_at", "nama"]
+                            "enum": [
+                                "created_at",
+                                "nama"
+                            ]
                         }
                     },
                     {
@@ -443,7 +839,9 @@
                 ]
             },
             "post": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "Create forum",
                 "operationId": "fb1118d607a9ed2d476d40a9744a2548",
                 "requestBody": {
@@ -451,7 +849,9 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["nama"],
+                                "required": [
+                                    "nama"
+                                ],
                                 "properties": {
                                     "nama": {
                                         "type": "string"
@@ -461,12 +861,19 @@
                                     },
                                     "jenis_forum": {
                                         "type": "string",
-                    "enum": ["publik", "privat"],
-                    "description": "Jenis forum berdasarkan visibilitas, 'publik' atau 'privat'."
+                                        "enum": [
+                                            "akademik",
+                                            "proyek",
+                                            "komunitas",
+                                            "lainnya"
+                                        ]
                                     },
                                     "is_public": {
                                         "type": "integer",
-                    "enum": [0, 1]
+                                        "enum": [
+                                            0,
+                                            1
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -494,7 +901,9 @@
         },
         "/forums/recommended": {
             "get": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "Recommended public forums",
                 "operationId": "b28e0877b919c8b1102f20b64975fa44",
                 "parameters": [
@@ -521,7 +930,9 @@
         },
         "/forums/{id}": {
             "get": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "Show forum",
                 "operationId": "d5cca19360614be34872c8d1125763be",
                 "parameters": [
@@ -549,7 +960,9 @@
                 ]
             },
             "delete": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "Delete forum (admin)",
                 "operationId": "d7115cc63ac21168b742e03e8165a253",
                 "parameters": [
@@ -574,7 +987,9 @@
                 ]
             },
             "patch": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "Update forum (admin)",
                 "operationId": "25b96ffda210e8ca31fd29d79485e09d",
                 "parameters": [
@@ -600,13 +1015,14 @@
                                         "type": "string"
                                     },
                                     "jenis_forum": {
-                    "type": "string",
-                    "enum": ["publik", "privat"],
-                    "description": "Jenis forum berdasarkan visibilitas, 'publik' atau 'privat'."
+                                        "type": "string"
                                     },
                                     "is_public": {
                                         "type": "integer",
-                    "enum": [0, 1]
+                                        "enum": [
+                                            0,
+                                            1
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -634,7 +1050,9 @@
         },
         "/forums/{id}/join": {
             "post": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "Join forum by kode_undangan",
                 "operationId": "72db21ac6a6d47fadd02458d42a1ff65",
                 "parameters": [
@@ -652,7 +1070,9 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["kode_undangan"],
+                                "required": [
+                                    "kode_undangan"
+                                ],
                                 "properties": {
                                     "kode_undangan": {
                                         "type": "string"
@@ -680,7 +1100,9 @@
         },
         "/forums/{id}/leave": {
             "post": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "Leave forum",
                 "operationId": "a5d6fb0302daa0122905348ce613175d",
                 "parameters": [
@@ -710,7 +1132,9 @@
         },
         "/forums/{id}/members": {
             "get": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "List forum members",
                 "operationId": "04a10c857011b69832634dd4e72cd818",
                 "parameters": [
@@ -737,7 +1161,9 @@
         },
         "/forums/{id}/members/{userId}": {
             "patch": {
-        "tags": ["Forums"],
+                "tags": [
+                    "Forums"
+                ],
                 "summary": "Update member allowed_upload (admin)",
                 "operationId": "6a0a7df4bb4920822b706917ee66c613",
                 "parameters": [
@@ -763,11 +1189,16 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["allowed_upload"],
+                                "required": [
+                                    "allowed_upload"
+                                ],
                                 "properties": {
                                     "allowed_upload": {
                                         "type": "integer",
-                    "enum": [0, 1]
+                                        "enum": [
+                                            0,
+                                            1
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -789,7 +1220,9 @@
         },
         "/media": {
             "post": {
-        "tags": ["Media"],
+                "tags": [
+                    "Media"
+                ],
                 "summary": "Upload media",
                 "operationId": "d175214f742667f943c7e384e77307fb",
                 "requestBody": {
@@ -797,7 +1230,9 @@
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                "required": ["forum_id"],
+                                "required": [
+                                    "forum_id"
+                                ],
                                 "properties": {
                                     "forum_id": {
                                         "type": "integer"
@@ -818,7 +1253,10 @@
                         },
                         "application/json": {
                             "schema": {
-                "required": ["forum_id", "file_url"],
+                                "required": [
+                                    "forum_id",
+                                    "file_url"
+                                ],
                                 "properties": {
                                     "forum_id": {
                                         "type": "integer"
@@ -856,7 +1294,9 @@
         },
         "/forums/{id}/media": {
             "get": {
-        "tags": ["Media"],
+                "tags": [
+                    "Media"
+                ],
                 "summary": "List forum media",
                 "operationId": "7c2ff218c1b8009dd340a136c2c88648",
                 "parameters": [
@@ -899,7 +1339,9 @@
         },
         "/media/{id}": {
             "get": {
-        "tags": ["Media"],
+                "tags": [
+                    "Media"
+                ],
                 "summary": "Show media",
                 "operationId": "3fe5664fe55c8d198b9aa15a2e65cfb0",
                 "parameters": [
@@ -927,7 +1369,9 @@
                 ]
             },
             "delete": {
-        "tags": ["Media"],
+                "tags": [
+                    "Media"
+                ],
                 "summary": "Delete media",
                 "operationId": "16047dc66e117c893da50c2a8387e6bf",
                 "parameters": [
@@ -957,7 +1401,9 @@
         },
         "/forums/{id}/notes": {
             "get": {
-        "tags": ["Notes"],
+                "tags": [
+                    "Notes"
+                ],
                 "summary": "List notes",
                 "operationId": "188d6b527aa138cefd6df52f9f9ea132",
                 "parameters": [
@@ -1022,7 +1468,9 @@
                 ]
             },
             "post": {
-        "tags": ["Notes"],
+                "tags": [
+                    "Notes"
+                ],
                 "summary": "Create note",
                 "operationId": "8e51e09fc1d263b0dfb7b04e85f80a32",
                 "parameters": [
@@ -1040,7 +1488,9 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["judul"],
+                                "required": [
+                                    "judul"
+                                ],
                                 "properties": {
                                     "judul": {
                                         "type": "string"
@@ -1077,7 +1527,9 @@
         },
         "/notes/{id}": {
             "get": {
-        "tags": ["Notes"],
+                "tags": [
+                    "Notes"
+                ],
                 "summary": "Show note",
                 "operationId": "7d629a705496be7f3642de6325671ec8",
                 "parameters": [
@@ -1105,7 +1557,9 @@
                 ]
             },
             "delete": {
-        "tags": ["Notes"],
+                "tags": [
+                    "Notes"
+                ],
                 "summary": "Delete note",
                 "operationId": "63269f6fc62cef40c792d36c0c3097ee",
                 "parameters": [
@@ -1133,7 +1587,9 @@
                 ]
             },
             "patch": {
-        "tags": ["Notes"],
+                "tags": [
+                    "Notes"
+                ],
                 "summary": "Update note",
                 "operationId": "37c3da3171098509d1783d656dbc1c7e",
                 "parameters": [
@@ -1187,7 +1643,9 @@
         },
         "/notifications": {
             "get": {
-        "tags": ["Notifications"],
+                "tags": [
+                    "Notifications"
+                ],
                 "summary": "Get forum notifications summary",
                 "operationId": "fb28045d0ff0b9499cb037dd2708f91b",
                 "responses": {
@@ -1204,7 +1662,9 @@
         },
         "/tasks/{id}/reminder": {
             "post": {
-        "tags": ["Reminders"],
+                "tags": [
+                    "Reminders"
+                ],
                 "summary": "Create reminder for task",
                 "operationId": "ef5cd72e0d097787afff91f1313007d9",
                 "parameters": [
@@ -1222,7 +1682,10 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["title", "waktu"],
+                                "required": [
+                                    "title",
+                                    "waktu"
+                                ],
                                 "properties": {
                                     "title": {
                                         "type": "string"
@@ -1257,7 +1720,9 @@
         },
         "/reminders": {
             "get": {
-        "tags": ["Reminders"],
+                "tags": [
+                    "Reminders"
+                ],
                 "summary": "List my reminders",
                 "operationId": "da3181d3a0302b6d23cb52d5d77b1dad",
                 "parameters": [
@@ -1284,7 +1749,9 @@
         },
         "/reminders/{id}": {
             "delete": {
-        "tags": ["Reminders"],
+                "tags": [
+                    "Reminders"
+                ],
                 "summary": "Delete reminder",
                 "operationId": "c2b33e16106872ceb375b5e496afe30f",
                 "parameters": [
@@ -1314,7 +1781,9 @@
         },
         "/search": {
             "get": {
-        "tags": ["Search"],
+                "tags": [
+                    "Search"
+                ],
                 "summary": "Search across entities",
                 "operationId": "9dbbed396d2ae80ffd95b0ccc3a2a942",
                 "parameters": [
@@ -1324,7 +1793,13 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-              "enum": ["forums", "tasks", "notes", "discussions", "all"]
+                            "enum": [
+                                "forums",
+                                "tasks",
+                                "notes",
+                                "discussions",
+                                "all"
+                            ]
                         }
                     },
                     {
@@ -1350,7 +1825,9 @@
         },
         "/forums/{id}/tasks": {
             "get": {
-        "tags": ["Tasks"],
+                "tags": [
+                    "Tasks"
+                ],
                 "summary": "List tasks in forum",
                 "operationId": "6cbbba4ae45974fb78b6f2e214b51835",
                 "parameters": [
@@ -1368,7 +1845,11 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-              "enum": ["todo", "doing", "done"]
+                            "enum": [
+                                "todo",
+                                "doing",
+                                "done"
+                            ]
                         }
                     },
                     {
@@ -1385,7 +1866,10 @@
                         "required": false,
                         "schema": {
                             "type": "string",
-              "enum": ["deadline", "created_at"]
+                            "enum": [
+                                "deadline",
+                                "created_at"
+                            ]
                         }
                     },
                     {
@@ -1417,7 +1901,9 @@
                 ]
             },
             "post": {
-        "tags": ["Tasks"],
+                "tags": [
+                    "Tasks"
+                ],
                 "summary": "Create task in forum",
                 "operationId": "5046c2ea26c463f7c87403ea76142cc6",
                 "parameters": [
@@ -1435,7 +1921,9 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                "required": ["judul"],
+                                "required": [
+                                    "judul"
+                                ],
                                 "properties": {
                                     "judul": {
                                         "type": "string"
@@ -1474,7 +1962,9 @@
         },
         "/tasks/{id}": {
             "get": {
-        "tags": ["Tasks"],
+                "tags": [
+                    "Tasks"
+                ],
                 "summary": "Show task",
                 "operationId": "bd18ece4685eef6b57d4f92c550df24c",
                 "parameters": [
@@ -1502,7 +1992,9 @@
                 ]
             },
             "delete": {
-        "tags": ["Tasks"],
+                "tags": [
+                    "Tasks"
+                ],
                 "summary": "Delete task",
                 "operationId": "d01032fffea9582e9cd58418876e5040",
                 "parameters": [
@@ -1530,7 +2022,9 @@
                 ]
             },
             "patch": {
-        "tags": ["Tasks"],
+                "tags": [
+                    "Tasks"
+                ],
                 "summary": "Update task",
                 "operationId": "63ff739ccfe9704249952ef6f7007911",
                 "parameters": [
@@ -1561,7 +2055,11 @@
                                     },
                                     "status": {
                                         "type": "string",
-                    "enum": ["todo", "doing", "done"]
+                                        "enum": [
+                                            "todo",
+                                            "doing",
+                                            "done"
+                                        ]
                                     },
                                     "file_url": {
                                         "type": "string",
@@ -1593,7 +2091,9 @@
         },
         "/tasks/{id}/attachments": {
             "post": {
-        "tags": ["Tasks"],
+                "tags": [
+                    "Tasks"
+                ],
                 "summary": "Attach file or link to task",
                 "operationId": "ee2f89728799b8cf285860f6755b15b7",
                 "parameters": [
@@ -1654,7 +2154,9 @@
         },
         "/users/{id}": {
             "get": {
-        "tags": ["Users"],
+                "tags": [
+                    "Users"
+                ],
                 "summary": "Show user",
                 "operationId": "d4a1e19cc7a510d4a6b3d122523ca5e0",
                 "parameters": [
@@ -1682,7 +2184,9 @@
                 ]
             },
             "put": {
-        "tags": ["Users"],
+                "tags": [
+                    "Users"
+                ],
                 "summary": "Update user (self only)",
                 "operationId": "113c41c4b35f62238cd9e894739bceb1",
                 "parameters": [
@@ -1755,6 +2259,10 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Counts",
+            "description": "Counts"
         },
         {
             "name": "Discussions",
