@@ -16,11 +16,14 @@ class AuthController extends BaseAPIController
 		requestBody: new OAT\RequestBody(
 			required: true,
 			content: new OAT\JsonContent(
-				required: ["nama", "email", "password"],
+				required: ["nim", "nama", "kelas", "semester", "email", "password"],
 				properties: [
+					new OAT\Property(property: "nim", type: "string"),
 					new OAT\Property(property: "nama", type: "string"),
+					new OAT\Property(property: "kelas", type: "string"),
+					new OAT\Property(property: "semester", type: "integer"),
 					new OAT\Property(property: "email", type: "string", format: "email"),
-					new OAT\Property(property: "password", type: "string", format: "password")
+					new OAT\Property(property: "password", type: "string", format: "password"),
 				]
 			)
 		),
@@ -40,7 +43,10 @@ class AuthController extends BaseAPIController
 		$model = new UserModel();
 
 		$userData = [
+			'nim'      => $data['nim'] ?? null,
 			'nama'     => $data['nama'] ?? null,
+			'kelas'    => $data['kelas'] ?? null,
+			'semester' => isset($data['semester']) ? (int) $data['semester'] : null,
 			'email'    => $data['email'],
 			'password' => password_hash($data['password'], PASSWORD_BCRYPT),
 		];

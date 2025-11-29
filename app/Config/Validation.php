@@ -43,7 +43,10 @@ class Validation extends BaseConfig
     // --------------------------------------------------------------------
     /** @var array<string, array<string, string>> */
     public array $authRegister = [
+        'nim'      => 'required|max_length[50]',
         'nama'     => 'required|max_length[100]',
+        'kelas'    => 'required|max_length[50]',
+        'semester' => 'required|integer|greater_than_equal_to[1]',
         'email'    => 'required|valid_email|is_unique[users.email]',
         'password' => 'required|min_length[8]',
     ];
