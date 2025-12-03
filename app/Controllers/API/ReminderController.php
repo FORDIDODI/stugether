@@ -32,7 +32,7 @@ class ReminderController extends BaseAPIController
 			new OAT\Response(response: 409, description: "Conflict")
 		]
 	)]
-	public function store(int $taskId)
+	public function storeForTask(int $taskId)
 	{
 		$rules = config('Validation')->reminderStore;
 		if (! $this->validate($rules)) {
@@ -94,16 +94,30 @@ class ReminderController extends BaseAPIController
 	{
 		$model    = new ReminderModel();
 		$reminder = $model->find($reminderId);
+		
 		if (! $reminder) {
 			return $this->fail('Reminder not found', 404);
 		}
+
+		// Custom reminder (kanban_id null) hanya bisa dihapus oleh ownernya
+		if ($reminder->kanban_id === null) {
+			if ((int) $reminder->user_id !== (int) $this->currentUser()->user_id) {
+				return $this->fail('Forbidden', 403);
+			}
+			$model->delete($reminderId);
+			return $this->success(['ok' => true], 'Deleted');
+		}
+
+		// Task reminder - logic yang sudah ada
 		$task = (new KanbanModel())->find($reminder->kanban_id);
 		if (! $task) {
 			return $this->fail('Task not found', 404);
 		}
+
 		if (! $this->canManageTask((int) $task->forum_id, (int) $task->created_by) && (int) $reminder->user_id !== (int) $this->currentUser()->user_id) {
 			return $this->fail('Forbidden', 403);
 		}
+
 		$model->delete($reminderId);
 		return $this->success(['ok' => true], 'Deleted');
 	}
@@ -120,6 +134,48 @@ class ReminderController extends BaseAPIController
 		$forum = (new ForumModel())->find($forumId);
 		return $forum && (int) $forum->admin_id === (int) $current->user_id;
 	}
+
+	#[OAT\Post(
+    path: "/reminders",
+    tags: ["Reminders"],
+    summary: "Create custom reminder (without task)",
+    security: [["bearerAuth" => []]],
+    requestBody: new OAT\RequestBody(
+        required: true,
+        content: new OAT\JsonContent(
+            required: ["title","waktu"],
+            properties: [
+                new OAT\Property(property: "title", type: "string"),
+                new OAT\Property(property: "waktu", type: "string", format: "date-time")
+            ]
+        )
+    ),
+    responses: [
+        new OAT\Response(response: 201, description: "Created"),
+        new OAT\Response(response: 400, description: "Bad Request")
+    ]
+)]
+public function store()
+{
+    $rules = config('Validation')->reminderStore;
+    if (! $this->validate($rules)) {
+        return $this->fail(implode('; ', $this->validator->getErrors()), 400);
+    }
+
+    $data = $this->request->getJSON(true) ?? $this->request->getPost();
+    $current = $this->currentUser();
+
+    $model = new ReminderModel();
+    $reminderId = $model->insert([
+        'kanban_id' => null, // Custom reminder tidak punya task
+        'user_id'   => $current->user_id,
+        'title'     => $data['title'],
+        'waktu'     => $data['waktu'],
+    ], true);
+
+    return $this->success($model->find($reminderId), 'Created', null, 201);
+}
+
 }
 
 

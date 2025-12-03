@@ -81,8 +81,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\API', 'filter' => 'jwt'],
     // Reminder Routes
     // ========================
     $routes->get('reminders', 'ReminderController::index');
-    $routes->post('reminders', 'ReminderController::create');
-    $routes->delete('reminders/(:num)', 'ReminderController::delete/$1');
+    $routes->post('reminders', 'ReminderController::store'); // Custom reminder
+    $routes->delete('reminders/(:num)', 'ReminderController::destroy/$1');
+    $routes->post('tasks/(:num)/reminder', 'ReminderController::storeForTask/$1'); // Task reminder
 });
 
 // ========================
