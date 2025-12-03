@@ -79,7 +79,17 @@ $routes->group('', ['filter' => 'jwt'], static function (RouteCollection $routes
     $routes->get('forums/(:num)/discussions', 'DiscussionController::index/$1', ['filter' => 'jwt']);
     $routes->post('forums/(:num)/discussions', 'DiscussionController::store/$1', ['filter' => 'jwt']);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+
+    $routes->post('discussions/(:num)/replies', 'DiscussionController::reply/$1', ['filter' => 'jwt']);
+
+    $routes->get('discussions/(:num)', 'DiscussionController::show/$1', ['filter' => 'jwt']);
+    $routes->patch('discussions/(:num)', 'DiscussionController::update/$1', ['filter' => 'jwt']);
+    $routes->delete('discussions/(:num)', 'DiscussionController::destroy/$1', ['filter' => 'jwt']);
+    $routes->get('forums/(:num)/members', 'ForumController::members/$1', ['filter' => 'jwt']);
+>>>>>>> Stashed changes
 
     $routes->post('discussions/(:num)/replies', 'DiscussionController::reply/$1', ['filter' => 'jwt']);
 
