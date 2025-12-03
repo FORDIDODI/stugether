@@ -141,15 +141,25 @@ class NoteController extends BaseAPIController
 	{
 		$model = new NoteModel();
 		$note  = $model->find($noteId);
+
 		if (! $note) {
 			return $this->fail('Not found', 404);
 		}
+
 		if (! $this->canManage($note->forum_id, $note->user_id)) {
 			return $this->fail('Forbidden', 403);
 		}
-		$data  = $this->request->getJSON(true) ?? $this->request->getRawInput();
+
+		// Handle both JSON and form-urlencoded
+		$data = $this->request->getJSON(true);
+		if ($data === null) {
+			$data = $this->request->getPost();
+		}
+
 		$patch = array_intersect_key($data, array_flip(['judul', 'kategori', 'mata_kuliah', 'deskripsi']));
+
 		$model->update($noteId, $patch);
+
 		return $this->success($model->find($noteId), 'Updated');
 	}
 
